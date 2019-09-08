@@ -21,6 +21,7 @@ html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, img {
 $main-color: #960000;
 $background-color: #4f4f4f;
 $text-color: #FDFDFD;
+$link-color: #FDFDFD;
 
 /*- Base settings -*/
 
@@ -37,7 +38,7 @@ html {
 
 /*- Link -*/
 a {
-	color: $main-color;
+	color: $link-color;
 	text-decoration: none;
 	font-weight: 700;
 	&:hover,
