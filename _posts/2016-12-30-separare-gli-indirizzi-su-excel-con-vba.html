@@ -1,0 +1,88 @@
+---
+layout: post
+status: publish
+published: true
+title: Separare gli indirizzi su Excel con VBA
+author:
+  display_name: dmereu
+  login: dmereu
+  email: davide.mereu@gmail.com
+  url: ''
+author_login: dmereu
+author_email: davide.mereu@gmail.com
+wordpress_id: 60
+wordpress_url: http://www.davidemereu.com/?p=60
+date: '2016-12-30 08:26:29 +0100'
+date_gmt: '2016-12-30 07:26:29 +0100'
+categories:
+- Work In Progress
+- Progetti
+tags:
+- Excel
+- VBA
+- indirizzi
+- database
+comments: []
+---
+<p>Negli ultimi tempi mi è capitato spesso di dover lavorare su basi di dati con anagrafiche, le cui tabelle erano suddivise in campi organizzati diversamente da come mi sarebbe servito.</p>
+<p>Uno dei casi che mi ha dato da pensare è stato dover migrare i dati da una tabella con l’indirizzo intero (toponimo, via, civico, estensione) in un unico campo, ad una con civico ed estensione in un campo separato rispetto a toponimo e via.</p>
+<p><!--more--></p>
+<p>La soluzione che ho trovato  è l’utilizzo di due funzioni, scritte in VBA, che separano le due parti seguendo la logica per cui la prima parola che inizia con un carattere numerico fa da sparti acque. Il limite è che indirizzi come “Via 8 Marzo 36 Sc.B” non vengono separati come dovrebbero, ma nel mio caso erano una piccolissima parte, quindi isolarli a valle del processo e correggerli è stato abbastanza semplice e indolore.</p>
+<p>Non ho scritto le funzioni di sana pianta, ma ho adattato al mio problema funzioni simili scovate nel web. Sicuramente è migliorabile, ad esempio unendo tutto in una sola funzione tipo SEPARA.INDIRIZZO(Stringa; Indice) dove con Indice si specifica l’indice dell’array che si vuole richiamare (ad es. “2” per il civico). Se qualcuno dovesse farlo me lo facesse sapere!</p>
+<p>Ad ogni modo, l’utilizzo è abbastanza immediato: inserendo il codice riportato qui sotto in un nuovo modulo nella finestra di sviluppo, le nuove funzioni possono essere richiamate nelle formule con le stesse modalità delle funzioni built-in di Excel, seguendo la sintassi ESTRAI_VIA(Stringa) ed ESTRAI_CIVICO(Stringa).</p>
+<pre class="lang:vb decode:true " title="ESTRAI_VIA">Function ESTRAI_VIA(stringa)
+ 
+Dim i, Parole, Limite
+Parole = Split(stringa, ” “)
+ 
+For i = LBound(Parole) To UBound(Parole)
+    If Mid(Parole(i), 1, 1) Like “[0-9]” Then
+        Limite = i – 1
+        Exit For
+    Else
+        Limite = UBound(Parole)
+    End If
+Next
+ 
+For i = LBound(Parole) To Limite
+    If via &lt;&gt; “” Then
+        via = via &amp; ” “ &amp; Parole(i)
+    Else
+        via = Parole(i)
+    End If
+Next
+ 
+ESTRAI_VIA = via
+ 
+End Function</pre>
+<pre class="lang:vb decode:true  " title="ESTRAI_CIVICO">Function ESTRAI_CIVICO(stringa)
+ 
+Dim i, Parole, Limite
+Parole = Split(stringa, ” “)
+ 
+For i = LBound(Parole) To UBound(Parole)
+    If Mid(Parole(i), 1, 1) Like “[0-9]” Then
+        Limite = i
+        Exit For
+    Else
+        Limite = UBound(Parole) + 1
+    End If
+Next
+ 
+For i = Limite To UBound(Parole)
+    If civico &lt;&gt; “” Then
+        civico = civico &amp; ” “ &amp; Parole(i)
+    Else
+        civico = Parole(i)
+    End If
+Next
+ 
+If civico = “” Then
+    civico = “snc”
+End If
+ 
+ESTRAI_CIVICO = civico
+ 
+End Function</pre>
+<div id="crayon-58a0674652c96224137852" class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-mac print-yes notranslate" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;"></div>
+<p><!-- [Format Time: 0 wprrbz8.0048 seconds] --></p>
