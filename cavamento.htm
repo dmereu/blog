@@ -1,0 +1,36 @@
+<link href="https://fonts.cdnfonts.com/css/seven-segment" rel="stylesheet">
+
+<body>
+<p class="timer" id="demo"></p>
+</body>
+
+<style>
+body {
+  background-color: black;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer {
+	font-family: 'Courier New', monospace;
+	font-weight: bold;
+	font-size: 4em;
+	color: red;
+}
+</style>
+
+<script>
+var countDownDate = new Date("Mar 29, 2024 18:00:00").getTime();
+var x = setInterval(function() {
+	var now = new Date().getTime();
+	var distance = countDownDate - now;
+	var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+	document.getElementById("demo").innerHTML = days + ":" + String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+	if (distance < 0) {clearInterval(x); document.getElementById("demo").innerHTML = "BOOM!";}
+}, 1000);
+</script>
